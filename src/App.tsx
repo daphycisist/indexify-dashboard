@@ -11,12 +11,16 @@ import Login from './components/pages/Login';
 import NotFound from './components/pages/NotFound';
 
 function App() {
-  let isAuthenticated = false;
+  let isAuthenticated =
+    // false;
+    true;
+
   const PrivateWrapper: FC<{ isAuthenticated: boolean }> = ({
     isAuthenticated,
   }) => {
-    return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+    return isAuthenticated ? <Outlet /> : <Navigate to="/" />;
   };
+
   return (
     <Router>
       <Routes>
@@ -24,7 +28,7 @@ function App() {
         <Route element={<PrivateWrapper isAuthenticated={isAuthenticated} />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
-        <Route path="/*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

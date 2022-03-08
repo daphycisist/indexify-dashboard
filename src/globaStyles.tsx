@@ -5,15 +5,17 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: -0.0005em;
   }
 
   html {
-    /* font-size: 62.5%; */
+    font-size: 62.5%;
   }
   
   body {
-    font-family: 'DM Sans', sans-serif;
     box-sizing: border-box;
+    color: inherit;
   }
 `;
 
