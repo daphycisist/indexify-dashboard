@@ -30,7 +30,8 @@ export interface CompanyInterface {
   worth_currency: string;
 }
 
-export interface PaginationInterface {
+export interface PaginationInterface
+  extends React.HtmlHTMLAttributes<HTMLDivElement> {
   currentPage: number;
   totalPages: number;
   handlePageDecrement: () => void;

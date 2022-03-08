@@ -1,5 +1,7 @@
-import React, { FC } from 'react';
+import React, { ChangeEvent, FC, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import AxiosRequest from '../../api/Axios';
 import { DPIconIndexifyLogo } from '../../assets/icons';
 import { FONTSIZE } from '../../constants';
 import media from '../../utilities';
@@ -8,14 +10,44 @@ import Card from '../atoms/Card/Card';
 import Input from '../atoms/Input/Input';
 
 const Login: FC = () => {
+  let navigate = useNavigate();
+
+  const [email, setEmail] = useState('');
+
+  const handleLogin = async () => {
+    if (!email) return;
+    const data = await AxiosRequest.post('/auth/login', {
+      email,
+    });
+
+    const token = data.data.token;
+
+    if (token) {
+      localStorage.setItem('token', token);
+      navigate('/dashboard');
+    }
+    return data.data;
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setEmail(value);
+  };
+
   return (
     <LoginContainer className="">
       <LoginWrapper>
         <DPIconIndexifyLogo className="logo" />
         <Card className="login-card">
           <h1>Log In to your account</h1>
-          <Input className="login-card__input" label="Email Address" />
-          <Button className="login-card__button">Login</Button>
+          <Input
+            className="login-card__input"
+            label="Email Address"
+            onChange={handleChange}
+          />
+          <Button className="login-card__button" onClick={handleLogin}>
+            Login
+          </Button>
         </Card>
       </LoginWrapper>
     </LoginContainer>

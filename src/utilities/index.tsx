@@ -17,13 +17,14 @@ const mediaQuery = (query: RuleOrQueryType) => (rules: RuleOrQueryType) =>
  */
 
 const media = {
-  smallMobile: mediaQuery`min-width: 320px`, // iphone 5/SE
-  mobile: mediaQuery`min-width: 414px`, // small mobile
-  mobileLarge: mediaQuery`min-width: 576px`, // mobile (surface duo)
-  tablet: mediaQuery`min-width: 768px`, // tablets
-  landscapeTablet: mediaQuery`min-width: 991px`, //big tablets
-  smallDesktop: mediaQuery`min-width: 1024px`, // tablets landscape, small desktops
-  largeScreens: mediaQuery`min-width: 1200px`, // tablets landscape, small desktops
+  smallMobile: mediaQuery`min-width: 320px`,
+  mobile: mediaQuery`min-width: 414px`,
+  mobileLarge: mediaQuery`min-width: 480px`, 
+  mobileXLarge: mediaQuery`min-width: 576px`,
+  tablet: mediaQuery`min-width: 768px`,
+  landscapeTablet: mediaQuery`min-width: 991px`,
+  smallDesktop: mediaQuery`min-width: 1024px`,
+  largeScreens: mediaQuery`min-width: 1200px`,
 };
 
 

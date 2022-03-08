@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { COLORS, FONTSIZE, FONTWEIGHT } from '../../constants';
+import media from '../../utilities';
 import Header from '../molecules/Header';
 import Pagination from '../molecules/Pagination';
 import Table from '../organisms/Table';
@@ -146,17 +147,22 @@ const Dashboard = () => {
   return (
     <DashboardWrapper>
       <Header />
-      <DashboardContent>
-        <Table columns={columns} data={data} />
-        <div className="pagination_wrapper">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={4}
-            handlePageDecrement={handlePageDecrement}
-            handlePageIncrement={handlePageIncrement}
-          />
-        </div>
-      </DashboardContent>
+      <DashboardContentWrapper>
+        <DashboardContent>
+          <TableWrapper>
+            <Table columns={columns} data={data} />
+          </TableWrapper>
+          <div className="pagination_container">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={4}
+              handlePageDecrement={handlePageDecrement}
+              handlePageIncrement={handlePageIncrement}
+              className=""
+            />
+          </div>
+        </DashboardContent>
+      </DashboardContentWrapper>
     </DashboardWrapper>
   );
 };
@@ -171,19 +177,27 @@ const DashboardWrapper = styled.section`
   min-height: 100vh;
 `;
 
-const DashboardContent = styled.section`
+const TableWrapper = styled.div`
+  width: 100%;
+  overflow-x: auto;
+`;
+
+const DashboardContentWrapper = styled.section`
   flex: 1;
   width: 100%;
   height: 100%;
-
   padding-top: 3.6rem;
-  padding-left: 16rem;
-  padding-right: 16.1rem;
+
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+
+  ${media.tablet`
+  `}
 
   table {
     width: 100%;
+    min-width: 760px;
     border-spacing: 0;
-    border: 1px solid black;
     text-align: left;
     border: 1px solid ${COLORS['grey-100']};
     border-radius: 5px 5px 0px 0px;
@@ -206,10 +220,11 @@ const DashboardContent = styled.section`
 
     td {
       font-size: ${FONTSIZE['text-xsm']};
+      font-weight: ${FONTWEIGHT['font-normal']};
       line-height: 17px;
-      padding: 1.5rem 0 1.6rem;
+      padding: 1.5rem 0;
     }
-
+    //1183
     th,
     td {
       border-bottom: 1px solid ${COLORS['grey-100']};
@@ -225,9 +240,16 @@ const DashboardContent = styled.section`
     }
   }
 
-  .pagination_wrapper {
+  .pagination_container {
     display: flex;
     justify-content: flex-end;
     margin-top: 1.2rem;
+    width: 100%;
   }
+`;
+
+const DashboardContent = styled.div`
+  max-width: 959px;
+  width: 100%;
+  margin: 0 auto;
 `;

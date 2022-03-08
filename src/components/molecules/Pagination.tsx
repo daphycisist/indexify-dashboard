@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { DPIconCaretLeft, DPIconCaretRight } from '../../assets/icons';
 import { COLORS, FONTSIZE, FONTWEIGHT } from '../../constants';
 import { PaginationInterface } from '../../types';
@@ -18,7 +18,6 @@ const Pagination: FC<PaginationInterface> = ({
         onClick={handlePageDecrement}
       >
         <DPIconCaretLeft />
-        {/* <img src={CaretLeft} alt="Caret Left" /> */}
       </PaginationButtons>
       <PageTracker>
         <span className="active">{currentPage}</span>{' '}
@@ -29,7 +28,6 @@ const Pagination: FC<PaginationInterface> = ({
         onClick={handlePageIncrement}
       >
         <DPIconCaretRight />
-        {/* <img src={CaretRight} alt="Caret Right" /> */}
       </PaginationButtons>
     </PaginationWrapper>
   );
@@ -43,22 +41,23 @@ const PaginationWrapper = styled.div`
 `;
 
 const PaginationButtons = styled(Button)<{ disabled: boolean }>`
-  background-color: ${({ disabled }) =>
-    disabled ? `${COLORS['grey-200']}` : `${COLORS.blue}`};
-  padding: 0.7rem 1.036rem 0.7rem 0.852rem;
-  align-self: flex-start;
+  /* padding: 0.7rem 1.036rem 0.7rem 0.852rem; */
+  ${({ disabled }) =>
+    disabled &&
+    css`
+      background-color: ${COLORS['grey-200']};
+      cursor: not-allowed;
+    `}
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 2.6rem;
   height: 2.6rem;
 
-  /* :first-of-type {
-    margin-right: 1.8rem;
+  svg {
+    width: 0.712rem;
+    height: 1.2rem;
   }
-
-  :last-of-type {
-    margin-left: 1.7rem;
-  } */
 
   ::selection {
     background-color: transparent;
@@ -78,6 +77,7 @@ const PaginationButtons = styled(Button)<{ disabled: boolean }>`
 
 const PageTracker = styled.div`
   width: 7.2rem;
+  text-align: center;
   color: ${COLORS['grey-300']};
   font-size: ${FONTSIZE['text-sm']};
   font-weight: ${FONTWEIGHT['font-bold']};
