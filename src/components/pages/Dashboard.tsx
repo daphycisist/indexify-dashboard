@@ -144,13 +144,17 @@ const Dashboard = () => {
   const handlePageIncrement = () => setCurrentPage((prev) => prev + 1);
   const handlePageDecrement = () => setCurrentPage((prev) => prev - 1);
 
+  const handleRowClick = (data: any) => {
+    console.log(data);
+  }
+
   return (
     <DashboardWrapper>
       <Header />
       <DashboardContentWrapper>
         <DashboardContent>
           <TableWrapper>
-            <Table columns={columns} data={data} />
+            <Table columns={columns} data={data} onRowClick={handleRowClick} />
           </TableWrapper>
           <div className="pagination_container">
             <Pagination

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useTable } from 'react-table';
+import { TableInterface } from '../../types';
 
-const Table = (props: { data: any; columns: any }) => {
-  const data = React.useMemo(() => props.data, [props.data]);
+const Table: FC<TableInterface> = ({ data, columns, onRowClick }) => {
+  const TableData = React.useMemo(() => data, [data]);
 
-  const columns = React.useMemo(() => props.columns, [props.columns]);
+  const TableColumns = React.useMemo(() => columns, [columns]);
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns, data });
+    useTable({ columns: TableColumns, data: TableData });
 
   return (
     <table {...getTableProps()}>
@@ -24,7 +25,10 @@ const Table = (props: { data: any; columns: any }) => {
         {rows.map((row) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()}>
+            <tr
+              {...row.getRowProps()}
+              onClick={() => onRowClick && onRowClick(row.original)}
+            >
               {row.cells.map((cell) => {
                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
               })}
