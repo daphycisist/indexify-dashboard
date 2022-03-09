@@ -7,6 +7,7 @@ export const COLORS = {
   'grey-100': '#F1F1F1',
   'grey-200': '#E9E9E9',
   'grey-300': '#9A9A9A',
+  'grey-400': '#E5E5E5',
 };
 
 export const FONTSIZE = {

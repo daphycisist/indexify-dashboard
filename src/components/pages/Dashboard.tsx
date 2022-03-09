@@ -2,9 +2,11 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { COLORS, FONTSIZE, FONTWEIGHT } from '../../constants';
+import { CompanyInterface } from '../../types';
 import media from '../../utilities';
 import Header from '../molecules/Header';
 import Pagination from '../molecules/Pagination';
+import { Modal } from '../organisms/Modal';
 import Table from '../organisms/Table';
 
 const Dashboard = () => {
@@ -140,38 +142,83 @@ const Dashboard = () => {
   ];
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [isOpen, setIsOpen] = useState(false);
+  const [rowData, setRowData] = useState<CompanyInterface | null>(null);
 
   const handlePageIncrement = () => setCurrentPage((prev) => prev + 1);
   const handlePageDecrement = () => setCurrentPage((prev) => prev - 1);
 
   const handleRowClick = (data: any) => {
-    console.log(data);
-  }
+    setRowData(data);
+    setIsOpen(true);
+  };
 
+  console.log(rowData);
+
+  // const data = ['email', 'address', 'createdAt', 'number_of_staff',D]
   return (
-    <DashboardWrapper>
-      <Header />
-      <DashboardContentWrapper>
-        <DashboardContent>
-          <TableWrapper>
-            <Table columns={columns} data={data} onRowClick={handleRowClick} />
-          </TableWrapper>
-          <div className="pagination_container">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={4}
-              handlePageDecrement={handlePageDecrement}
-              handlePageIncrement={handlePageIncrement}
-              className=""
-            />
+    <>
+      <Modal isShown={isOpen} hide={() => setIsOpen((prev) => !prev)}>
+        <ModalInfo>
+          <h1 className="header">{rowData?.company_name}</h1>
+          <div className="content-container">
+            <div className="content-container__info-row">
+              <span className="content-container__info-row-title">Email:</span>
+            </div>
           </div>
-        </DashboardContent>
-      </DashboardContentWrapper>
-    </DashboardWrapper>
+        </ModalInfo>
+      </Modal>{' '}
+      <DashboardWrapper>
+        <Header />
+        <DashboardContentWrapper>
+          <DashboardContent>
+            <TableWrapper>
+              <Table
+                columns={columns}
+                data={data}
+                onRowClick={handleRowClick}
+              />
+            </TableWrapper>
+            <div className="pagination_container">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={4}
+                handlePageDecrement={handlePageDecrement}
+                handlePageIncrement={handlePageIncrement}
+                className=""
+              />
+            </div>
+          </DashboardContent>
+        </DashboardContentWrapper>
+      </DashboardWrapper>
+    </>
   );
 };
 
 export default Dashboard;
+
+const ModalInfo = styled.div`
+  .header {
+    font-weight: ${FONTWEIGHT['font-bold']};
+    font-size: ${FONTSIZE['text-lg']};
+    padding: 2.4rem 0 2.2rem 2.8rem;
+  }
+
+  .content-container {
+    padding: 1.2rem 0 0 2.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.1rem;
+
+    &__info-row {
+      &-title {
+        font-weight: ${FONTWEIGHT['font-medium']};
+        font-size: ${FONTSIZE['text-sm']};
+        line-height: 18px;
+      }
+    }
+  }
+`;
 
 const DashboardWrapper = styled.section`
   display: flex;
@@ -194,11 +241,13 @@ const DashboardContentWrapper = styled.section`
 
   padding-left: 2.5rem;
   padding-right: 2.5rem;
+  background-color: #fffefe;
 
   ${media.tablet`
   `}
 
   table {
+    background-color: ${COLORS.white};
     width: 100%;
     min-width: 760px;
     border-spacing: 0;

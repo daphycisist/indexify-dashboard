@@ -1,5 +1,3 @@
-import { Row } from "react-table";
-
 export interface InputInterface
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -40,9 +38,16 @@ export interface PaginationInterface
   handlePageIncrement: () => void;
 }
 
-export interface TableInterface extends React.TableHTMLAttributes<HTMLTableElement> {
+export interface TableInterface
+  extends React.TableHTMLAttributes<HTMLTableElement> {
   data: Record<string, unknown>[];
   columns: { Header: string; accessor: string }[];
-  // onRowClick?: (id: number, data: any) => void;
-  onRowClick?: (row:Record<string, unknown>) => void;
+  onRowClick?: (row: Record<string, unknown>) => void;
+}
+
+export interface ModalInterface  {
+  isShown: boolean;
+  hide: () => void;
+  modalContent?: JSX.Element;
+  headerText?: string;
 }

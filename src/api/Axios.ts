@@ -17,7 +17,7 @@ const axiosErrorMessage = (code: string) => {
 };
 
 const requestHeaderConfiguration = (config: AxiosRequestConfig) => {
-  let accessToken = localStorage.getItem('accessToken');
+  let accessToken = localStorage.getItem('token');
   if (accessToken) {
     return {
       ...config,

@@ -59,7 +59,7 @@ const PaginationButtons = styled(Button)<{ disabled: boolean }>`
     height: 1.2rem;
   }
 
-  ::selection {
+  *::selection {
     background-color: transparent;
   }
 
@@ -80,9 +80,11 @@ const PageTracker = styled.div`
   text-align: center;
   color: ${COLORS['grey-300']};
   font-size: ${FONTSIZE['text-sm']};
-  font-weight: ${FONTWEIGHT['font-bold']};
   line-height: 18px;
+  font-weight: ${FONTWEIGHT['font-normal']};
+
   .active {
+    font-weight: ${FONTWEIGHT['font-bold']};
     color: ${COLORS.black};
   }
 `;
