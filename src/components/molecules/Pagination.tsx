@@ -14,13 +14,13 @@ const Pagination: FC<PaginationInterface> = ({
   return (
     <PaginationWrapper>
       <PaginationButtons
-        disabled={currentPage === 1}
+        disabled={currentPage === 0}
         onClick={handlePageDecrement}
       >
         <DPIconCaretLeft />
       </PaginationButtons>
       <PageTracker>
-        <span className="active">{currentPage}</span>{' '}
+        <span className="active">{currentPage + 1}</span>{' '}
         <span>of {totalPages}</span>
       </PageTracker>
       <PaginationButtons

@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { COLORS, FONTSIZE, FONTWEIGHT } from '../../constants';
+import { useGetAllCompaniesQuery } from '../../features/api/companyApi';
 import { CompanyInterface } from '../../types';
 import media from '../../utilities';
 import Header from '../molecules/Header';
@@ -28,7 +29,7 @@ const Dashboard = () => {
       accessor: 'createdAt',
     },
   ];
-  const data = [
+  const datar = [
     {
       _id: '6221c01cfc13ae043f000f1e',
       company_name: 'Abata',
@@ -141,9 +142,15 @@ const Dashboard = () => {
     },
   ];
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [rowData, setRowData] = useState<CompanyInterface | null>(null);
+
+  const { isLoading, data, isSuccess, isError, error } =
+    useGetAllCompaniesQuery(currentPage);
+
+  const fetchedData = data?.payload;
+  console.log(data, fetchedData);
 
   const handlePageIncrement = () => setCurrentPage((prev) => prev + 1);
   const handlePageDecrement = () => setCurrentPage((prev) => prev - 1);
@@ -153,9 +160,6 @@ const Dashboard = () => {
     setIsOpen(true);
   };
 
-  console.log(rowData);
-
-  // const data = ['email', 'address', 'createdAt', 'number_of_staff',D]
   return (
     <>
       <Modal isShown={isOpen} hide={() => setIsOpen((prev) => !prev)}>
@@ -175,14 +179,14 @@ const Dashboard = () => {
             <TableWrapper>
               <Table
                 columns={columns}
-                data={data}
+                data={fetchedData?.companies as unknown as any}
                 onRowClick={handleRowClick}
               />
             </TableWrapper>
             <div className="pagination_container">
               <Pagination
                 currentPage={currentPage}
-                totalPages={4}
+                totalPages={fetchedData?.pages ?? 0}
                 handlePageDecrement={handlePageDecrement}
                 handlePageIncrement={handlePageIncrement}
                 className=""

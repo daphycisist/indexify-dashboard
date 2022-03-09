@@ -21,7 +21,6 @@ export const companySlice = createSlice({
       state.companies = action.payload;
     },
     setCredentials: (state, action: PayloadAction<string>) => {
-      console.log(action.payload);
         state.token = action.payload;
         state.isAuthenticated = true;
     },

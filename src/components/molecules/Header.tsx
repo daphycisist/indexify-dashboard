@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import styled from 'styled-components';
 import { DPIconIndexifyLogo } from '../../assets/icons';
 import { COLORS, FONTWEIGHT } from '../../constants';
+import { persistor } from '../../store';
 import media from '../../utilities';
 import Button from '../atoms/Button/Button';
 import Input from '../atoms/Input/Input';
@@ -19,7 +20,14 @@ const Header: FC = () => {
             className="header__search-input"
             placeholder="Search for a user"
           />
-          <Button className="logout-btn logout-desktop">Logout</Button>
+          <Button
+            className="logout-btn logout-desktop"
+            onClick={() => {
+              persistor.purge();
+            }}
+          >
+            Logout
+          </Button>
         </HeaderRightWrapper>
       </HeaderWrapper>
     </HeaderContainer>

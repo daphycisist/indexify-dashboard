@@ -51,3 +51,5 @@ export interface ModalInterface  {
   modalContent?: JSX.Element;
   headerText?: string;
 }
+
+export type CompaniesResponseType = {payload: { companies: CompanyInterface[]; pages: number; page: number }} | undefined

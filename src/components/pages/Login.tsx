@@ -24,7 +24,6 @@ const Login: FC = () => {
       const result = await login({ email });
       if (isSuccess && "data" in result) {
         dispatch(setCredentials(result?.data?.token));
-        console.log({ isLoading, data, isSuccess, isError, error });
         navigate("/dashboard");
       }
     } catch (err) {

@@ -5,6 +5,7 @@ import {
   PAUSE,
   PERSIST,
   persistReducer,
+  persistStore,
   PURGE,
   REGISTER,
   REHYDRATE,
@@ -12,6 +13,7 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { companyApi } from './features/api/companyApi';
 import companyReducer from './features/company/companySlice';
+
 const persistConfig = {
   key: 'root',
   version: 1,
@@ -36,6 +38,7 @@ export const store = configureStore({
 });
 
 setupListeners(store.dispatch);
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
