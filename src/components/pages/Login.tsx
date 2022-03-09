@@ -1,32 +1,35 @@
 import React, { ChangeEvent, FC, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import AxiosRequest from '../../api/Axios';
 import { DPIconIndexifyLogo } from '../../assets/icons';
 import { FONTSIZE } from '../../constants';
+import { useLoginMutation } from '../../features/api/companyApi';
+import { setCredentials } from '../../features/company/companySlice';
 import media from '../../utilities';
 import Button from '../atoms/Button/Button';
 import Card from '../atoms/Card/Card';
 import Input from '../atoms/Input/Input';
 
 const Login: FC = () => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState('');
 
+  const [login, { isLoading, data, isSuccess, isError, error }] = useLoginMutation();
+
   const handleLogin = async () => {
-    if (!email) return;
-    const data = await AxiosRequest.post('/auth/login', {
-      email,
-    });
-
-    const token = data.data.token;
-
-    if (token) {
-      localStorage.setItem('token', token);
-      navigate('/dashboard');
+    try {
+      const result = await login({ email });
+      if (isSuccess && "data" in result) {
+        dispatch(setCredentials(result?.data?.token));
+        console.log({ isLoading, data, isSuccess, isError, error });
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      console.log(err);
     }
-    return data.data;
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
