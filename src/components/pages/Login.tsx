@@ -19,7 +19,7 @@ const Login: FC = () => {
 
   const [email, setEmail] = useState('');
 
-  const [login, { isError, isLoading, isSuccess, error }] = useLoginMutation();
+  const [login, { isError, isLoading}] = useLoginMutation();
 
   const handleLogin = async () => {
     try {
