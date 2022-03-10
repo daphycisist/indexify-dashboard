@@ -19,23 +19,20 @@ const Table: FC<TableInterface> = ({
 
   return !rows.length ? (
     <>
-      {' '}
       {
         <table>
-          {' '}
           <thead>
-            {' '}
             <tr style={{display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr' }}>
               {headerGroups.map((column) => {
                 return column.headers.map((header) => {
                   console.log(header);
                   return <th>{header.Header}</th>;
                 });
-              })}{' '}
+              })}
             </tr>
           </thead>
         </table>
-      }{' '}
+      }
       <div
         style={{
           width: '100%',

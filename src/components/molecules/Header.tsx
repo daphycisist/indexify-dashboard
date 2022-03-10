@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { DPIconIndexifyLogo } from '../../assets/icons';
 import { COLORS, FONTWEIGHT } from '../../constants';
 import { logout } from '../../features/company/companySlice';
+import { persistor } from '../../store';
 import media from '../../utilities';
 import Button from '../atoms/Button/Button';
 import Input from '../atoms/Input/Input';
@@ -18,7 +19,7 @@ const Header: FC<{
 
   const handleLogout = () => {
     dispatch(logout());
-    // persistor.purge();
+    persistor.purge();
     navigate('/');
   };
   return (

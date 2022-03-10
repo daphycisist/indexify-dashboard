@@ -4,14 +4,11 @@ import React, {
   useCallback,
   useEffect,
   useRef,
-  useState
+  useState,
 } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { COLORS, FONTSIZE, FONTWEIGHT } from '../../constants';
 import { useGetCompaniesQuery } from '../../features/api/companyApi';
-import { RootState } from '../../store';
 import { CompanyInterface } from '../../types';
 import media from '../../utilities';
 import { formatCurrency } from '../../utilities/helpers';
@@ -46,15 +43,9 @@ const Dashboard = () => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [rowData, setRowData] = useState<CompanyInterface | null>(null);
 
-  let {
-    data: searchedCompanies,
-    isLoading,
-    isSuccess,
-    isFetching,
-    error,
-  } = useGetCompaniesQuery({
+  let { data: searchedCompanies, isFetching } = useGetCompaniesQuery({
     page: currentPage,
-    search: debouncedSearch,
+    search: `${debouncedSearch}`,
   });
 
   const searchedCompaniesData = searchedCompanies?.payload;
@@ -99,7 +90,6 @@ const Dashboard = () => {
     return data;
   };
 
-  console.log({ isFetching });
   return (
     <>
       <Modal isShown={isOpen} hide={() => setIsOpen((prev) => !prev)}>
@@ -156,7 +146,6 @@ const Dashboard = () => {
                 onRowClick={handleRowClick}
                 isLoading={isFetching}
               />
-            
             </TableWrapper>
             <div className="pagination_container">
               <Pagination
