@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { COLORS, FONTSIZE } from '../../../constants';
 import { ButtonInterface } from '../../../types';
 
-const Button: FC<ButtonInterface> = ({ children, className, ...rest }) => {
+const Button: FC<ButtonInterface> = ({ children, className, disabled, ...rest }) => {
   return (
-    <ButtonWrapper className={className} {...rest}>
+    <ButtonWrapper className={className} disabled={disabled} {...rest}>
       {children}
     </ButtonWrapper>
   );

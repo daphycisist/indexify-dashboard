@@ -1,31 +1,47 @@
-import React, { FC } from 'react';
+import React, { ChangeEvent, FC, memo } from 'react';
+import { logout } from '../../features/company/companySlice';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DPIconIndexifyLogo } from '../../assets/icons';
 import { COLORS, FONTWEIGHT } from '../../constants';
-import { persistor } from '../../store';
 import media from '../../utilities';
 import Button from '../atoms/Button/Button';
 import Input from '../atoms/Input/Input';
+import { persistor } from '../../store';
 
-const Header: FC = () => {
+const Header: FC<{
+  handleSearch: (event: ChangeEvent<HTMLInputElement>) => void;
+  searchValue: string;
+}> = ({ handleSearch, searchValue }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    // persistor.purge();
+    navigate('/');
+  };
   return (
     <HeaderContainer>
       <HeaderWrapper>
         <div className="logo-container">
           <DPIconIndexifyLogo className="logo" />
-          <Button className="logout-btn logout-btn__hidden">Logout</Button>
+          <Button
+            className="logout-btn logout-btn__hidden"
+            onClick={handleLogout}
+          >
+            Logout
+          </Button>
         </div>
         <HeaderRightWrapper>
           <Input
             className="header__search-input"
             placeholder="Search for a user"
+            onChange={handleSearch}
+            value={searchValue}
           />
-          <Button
-            className="logout-btn logout-desktop"
-            onClick={() => {
-              persistor.purge();
-            }}
-          >
+          <Button className="logout-btn logout-desktop" onClick={handleLogout}>
             Logout
           </Button>
         </HeaderRightWrapper>
@@ -34,7 +50,7 @@ const Header: FC = () => {
   );
 };
 
-export default Header;
+export default memo(Header);
 
 const HeaderContainer = styled.header`
   border-bottom: 1px solid ${COLORS['grey-200']};

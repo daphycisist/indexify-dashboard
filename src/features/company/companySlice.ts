@@ -1,9 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { persistor } from '../../store';
 import { CompanyInterface } from '../../types';
 
 export interface CompanyState {
   token: string | null;
-  companies: CompanyInterface[];
+  companies: CompanyInterface[] | undefined;
   isAuthenticated: boolean;
 }
 
@@ -17,15 +18,22 @@ export const companySlice = createSlice({
   name: 'company',
   initialState,
   reducers: {
-    addCompany: (state, action: PayloadAction<CompanyInterface[]>) => {
+    addCompanies: (
+      state,
+      action: PayloadAction<CompanyInterface[] | undefined>
+    ) => {
       state.companies = action.payload;
     },
     setCredentials: (state, action: PayloadAction<string>) => {
-        state.token = action.payload;
-        state.isAuthenticated = true;
+      state.token = action.payload;
+      state.isAuthenticated = true;
+    },
+    logout: (state) => {
+       window.localStorage.removeItem('persist:root');
+       state = initialState;
     },
   },
 });
 
-export const { addCompany, setCredentials } = companySlice.actions;
+export const { addCompanies, setCredentials, logout } = companySlice.actions;
 export default companySlice.reducer;

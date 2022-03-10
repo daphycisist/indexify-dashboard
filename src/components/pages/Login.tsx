@@ -1,12 +1,14 @@
 import React, { ChangeEvent, FC, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { DPIconIndexifyLogo } from '../../assets/icons';
+import { DPIconIndexifyLogo, DPIconLoadinRing } from '../../assets/icons';
 import { FONTSIZE } from '../../constants';
 import { useLoginMutation } from '../../features/api/companyApi';
 import { setCredentials } from '../../features/company/companySlice';
 import media from '../../utilities';
+import { validateEmail } from '../../utilities/helpers';
 import Button from '../atoms/Button/Button';
 import Card from '../atoms/Card/Card';
 import Input from '../atoms/Input/Input';
@@ -17,14 +19,29 @@ const Login: FC = () => {
 
   const [email, setEmail] = useState('');
 
-  const [login, { isLoading, data, isSuccess, isError, error }] = useLoginMutation();
+  const [login, { isError, isLoading, isSuccess, error }] = useLoginMutation();
+  console.log({ isError, isLoading, isSuccess });
 
   const handleLogin = async () => {
     try {
-      const result = await login({ email });
-      if (isSuccess && "data" in result) {
-        dispatch(setCredentials(result?.data?.token));
-        navigate("/dashboard");
+      // console.log(email);
+      // console.log(data);
+      const validatedEmail = validateEmail(email);
+
+      if (!validatedEmail) {
+        toast.error('Please provide a valid email');
+        return;
+      }
+
+      const result = await login({ email }).unwrap();
+      console.log({ result, isError, isLoading, isSuccess });
+
+      if (result.token) {
+        dispatch(setCredentials(result.token));
+        navigate('/dashboard');
+      } else if (isError) {
+        console.log(error);
+        toast.error('errordadta?.data?.message');
       }
     } catch (err) {
       console.log(err);
@@ -35,6 +52,8 @@ const Login: FC = () => {
     const { value } = e.target;
     setEmail(value);
   };
+
+  console.log(!!email.length);
 
   return (
     <LoginContainer className="">
@@ -47,8 +66,16 @@ const Login: FC = () => {
             label="Email Address"
             onChange={handleChange}
           />
-          <Button className="login-card__button" onClick={handleLogin}>
-            Login
+          <Button
+            className="login-card__button"
+            onClick={handleLogin}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <DPIconLoadinRing className="loader" />
+            ) : (
+              <span>Login</span>
+            )}
           </Button>
         </Card>
       </LoginWrapper>
@@ -91,6 +118,10 @@ const LoginWrapper = styled.div`
 
     &__button {
       width: 100%;
+      .loader {
+        width: 1.8rem;
+        height: 1.8rem;
+      }
 
       ${media.mobile`
         width: 29.8rem;

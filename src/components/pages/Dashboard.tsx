@@ -1,16 +1,30 @@
-import moment from 'moment';
-import React, { useState } from 'react';
+import { debounce } from 'lodash';
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { COLORS, FONTSIZE, FONTWEIGHT } from '../../constants';
-import { useGetAllCompaniesQuery } from '../../features/api/companyApi';
+import {
+  useGetAllCompaniesQuery,
+  useGetCompanyQuery,
+} from '../../features/api/companyApi';
+import { addCompanies } from '../../features/company/companySlice';
+import { RootState } from '../../store';
 import { CompanyInterface } from '../../types';
 import media from '../../utilities';
+import { formatCurrency } from '../../utilities/helpers';
 import Header from '../molecules/Header';
 import Pagination from '../molecules/Pagination';
 import { Modal } from '../organisms/Modal';
 import Table from '../organisms/Table';
 
 const Dashboard = () => {
+  const DEBOUNCE_DELAY = process.env.DEBOUNCE_DELAY as unknown as number;
   const columns = [
     {
       Header: 'Company name',
@@ -29,128 +43,38 @@ const Dashboard = () => {
       accessor: 'createdAt',
     },
   ];
-  const datar = [
-    {
-      _id: '6221c01cfc13ae043f000f1e',
-      company_name: 'Abata',
-      email: 'ipayleykt@nih.gov',
-      address: '54267 Little Fleur Avenue',
-      createdAt: moment('2021-08-09T05:52:51.000Z').format('MM/DD/YYYY'),
-      country: 'Indonesia',
-      number_of_staff: 61300,
-      net_worth: 551267685,
-      worth_currency: 'IDR',
-    },
-    {
-      _id: '6221c01dfc13ae043f000f9d',
-      company_name: 'Abata',
-      email: 'cberryclothoc@theguardian.com',
-      address: '30749 Eastlawn Road',
-      createdAt: moment('2022-01-14T06:22:26.000Z').format('MM/DD/YYYY'),
-      country: 'Czech Republic',
-      number_of_staff: 98852,
-      net_worth: 930630675,
-      worth_currency: 'CZK',
-    },
-    {
-      _id: '6221c01cfc13ae043f000efb',
-      company_name: 'Abatz',
-      email: 'dcostaju@livejournal.com',
-      address: '2 Morningstar Hill',
-      createdAt: moment('2021-10-08T04:50:51.000Z').format('MM/DD/YYYY'),
-      country: 'Thailand',
-      number_of_staff: 65795,
-      net_worth: 746941876,
-      worth_currency: 'THB',
-    },
-    {
-      _id: '6221c01cfc13ae043f000f16',
-      company_name: 'Abatz',
-      email: 'fpenticostkl@sun.com',
-      address: '9121 Ridgeway Alley',
-      createdAt: moment('2021-06-28T18:39:38.000Z').format('MM/DD/YYYY'),
-      country: 'Nigeria',
-      number_of_staff: 79397,
-      net_worth: 272517120,
-      worth_currency: 'NGN',
-    },
-    {
-      _id: '6221c01afc13ae043f000cdd',
-      company_name: 'Abatz',
-      email: 'agaudon4s@cisco.com',
-      address: '9 Meadow Ridge Trail',
-      createdAt: moment('2021-11-09T20:07:34.000Z').format('MM/DD/YYYY'),
-      country: 'Portugal',
-      number_of_staff: 93274,
-      net_worth: 111641471,
-      worth_currency: 'EUR',
-    },
-    {
-      _id: '6221c01dfc13ae043f000f65',
-      company_name: 'Abatz',
-      email: 'homoylanms@clickbank.net',
-      address: '0 Sullivan Alley',
-      createdAt: moment('2021-05-01T15:12:28.000Z').format('MM/DD/YYYY'),
-      country: 'Philippines',
-      number_of_staff: 35881,
-      net_worth: 544159846,
-      worth_currency: 'PHP',
-    },
-    {
-      _id: '6221c01afc13ae043f000db9',
-      company_name: 'Abatz',
-      email: 'nlangstoneaw@cam.ac.uk',
-      address: '8 Harper Terrace',
-      createdAt: moment('2021-06-12T14:08:55.000Z').format('MM/DD/YYYY'),
-      country: 'China',
-      number_of_staff: 15028,
-      net_worth: 295131018,
-      worth_currency: 'CNY',
-    },
-    {
-      _id: '6221c01afc13ae043f000d26',
-      company_name: 'Agivu',
-      email: 'adensell6t@virginia.edu',
-      address: '76 Paget Parkway',
-      createdAt: moment('2021-07-10T22:23:38.000Z').format('MM/DD/YYYY'),
-      country: 'Argentina',
-      number_of_staff: 248,
-      net_worth: 931744574,
-      worth_currency: 'ARS',
-    },
-    {
-      _id: '6221c01afc13ae043f000d57',
-      company_name: 'Aibox',
-      email: 'meathorne86@wikipedia.org',
-      address: '369 Marquette Circle',
-      createdAt: moment('2021-09-12T22:09:10.000Z').format('MM/DD/YYYY'),
-      country: 'United States',
-      number_of_staff: 67678,
-      net_worth: 916171831,
-      worth_currency: 'USD',
-    },
-    {
-      _id: '6221c01cfc13ae043f000ef0',
-      company_name: 'Aibox',
-      email: 'tstivensjj@ihg.com',
-      address: '76 Superior Place',
-      createdAt: moment('2021-04-21T21:26:14.000Z').format('MM/DD/YYYY'),
-      country: 'Poland',
-      number_of_staff: 93719,
-      net_worth: 569990694,
-      worth_currency: 'PLN',
-    },
-  ];
+  const dispatch = useDispatch();
+  const { companies } = useSelector((state: RootState) => state.companies);
 
   const [currentPage, setCurrentPage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [rowData, setRowData] = useState<CompanyInterface | null>(null);
 
-  const { isLoading, data, isSuccess, isError, error } =
-    useGetAllCompaniesQuery(currentPage);
+  let {
+    isLoading: allCompaniesLoading,
+    data: allCompanies,
+    isSuccess: allCompaniesSucess,
+    isFetching: allCompaniesFetching,
+    error: allCompaniesError,
+  } = useGetAllCompaniesQuery(currentPage);
 
-  const fetchedData = data?.payload;
-  console.log(data, fetchedData);
+  let {
+    data: searchedCompanies,
+    isLoading: companiesLoading,
+    isSuccess: companiesSucess,
+    isFetching: companiesFetching,
+    error: companiesError,
+  } = useGetCompanyQuery({
+    page: currentPage,
+    search: debouncedSearch,
+  });
+
+  const allCompaniesData = allCompanies?.payload;
+  const searchedCompaniesData = searchedCompanies?.payload;
+
+  // console.log({ searchedCompaniesData });
 
   const handlePageIncrement = () => setCurrentPage((prev) => prev + 1);
   const handlePageDecrement = () => setCurrentPage((prev) => prev - 1);
@@ -160,6 +84,57 @@ const Dashboard = () => {
     setIsOpen(true);
   };
 
+  useEffect(() => {
+    if (companiesFetching) {
+      dispatch(addCompanies(searchedCompaniesData?.companies));
+    } else if (allCompaniesFetching) {
+      dispatch(addCompanies(allCompaniesData?.companies));
+    }
+  }, [
+    allCompaniesData?.companies,
+    allCompaniesFetching,
+    companiesFetching,
+    dispatch,
+    searchedCompaniesData?.companies,
+  ]);
+
+  console.log({
+    companiesLoading,
+    allCompaniesLoading,
+    allCompaniesData,
+    searchedCompaniesData,
+  });
+
+  const debouncedSearchValue = useRef(
+    debounce((searchString) => {
+      setDebouncedSearch(searchString);
+    }, DEBOUNCE_DELAY)
+  ).current;
+
+  useEffect(() => {
+    return () => {
+      debouncedSearchValue.cancel();
+    };
+  }, [debouncedSearchValue]);
+
+  const handleSearch = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => {
+      const searchValue = event.target.value;
+      setSearch(searchValue);
+      debouncedSearchValue(searchValue);
+    },
+    [debouncedSearchValue]
+  );
+
+  const getRowDataNetworth = (rowData: CompanyInterface | null) => {
+    const data =
+      rowData &&
+      formatCurrency(
+        rowData?.worth_currency as string,
+        rowData?.net_worth as number
+      );
+    return data;
+  };
   return (
     <>
       <Modal isShown={isOpen} hide={() => setIsOpen((prev) => !prev)}>
@@ -168,25 +143,56 @@ const Dashboard = () => {
           <div className="content-container">
             <div className="content-container__info-row">
               <span className="content-container__info-row-title">Email:</span>
+              <span className="">{rowData?.email}</span>
+            </div>
+            <div className="content-container__info-row">
+              <span className="content-container__info-row-title">
+                Address:
+              </span>
+              <span className="">{rowData?.address}</span>
+            </div>
+            <div className="content-container__info-row">
+              <span className="content-container__info-row-title">
+                Date Created:
+              </span>
+              <span className="">{rowData?.createdAt}</span>
+            </div>
+            <div className="content-container__info-row">
+              <span className="content-container__info-row-title">
+                No. of staff:
+              </span>
+              <span className="">{rowData?.number_of_staff}</span>
+            </div>
+            <div className="content-container__info-row">
+              <span className="content-container__info-row-title">
+                Country:
+              </span>
+              <span className="">{rowData?.country}</span>
+            </div>
+            <div className="content-container__info-row">
+              <span className="content-container__info-row-title">
+                Net Worth:
+              </span>
+              <span className="">{getRowDataNetworth(rowData)}</span>
             </div>
           </div>
         </ModalInfo>
       </Modal>{' '}
       <DashboardWrapper>
-        <Header />
+        <Header handleSearch={handleSearch} searchValue={search} />
         <DashboardContentWrapper>
           <DashboardContent>
             <TableWrapper>
               <Table
                 columns={columns}
-                data={fetchedData?.companies as unknown as any}
+                data={(companies as unknown as any) ?? []}
                 onRowClick={handleRowClick}
               />
             </TableWrapper>
             <div className="pagination_container">
               <Pagination
                 currentPage={currentPage}
-                totalPages={fetchedData?.pages ?? 0}
+                totalPages={allCompaniesData?.pages ?? 0}
                 handlePageDecrement={handlePageDecrement}
                 handlePageIncrement={handlePageIncrement}
                 className=""
@@ -202,10 +208,16 @@ const Dashboard = () => {
 export default Dashboard;
 
 const ModalInfo = styled.div`
+  width: 49.2rem;
+  height: 33.9rem;
+  background-color: ${COLORS['swan-white']};
+  border-radius: 5px;
+  
   .header {
     font-weight: ${FONTWEIGHT['font-bold']};
     font-size: ${FONTSIZE['text-lg']};
     padding: 2.4rem 0 2.2rem 2.8rem;
+    border-bottom: 1px solid ${COLORS['off-white']};
   }
 
   .content-container {
@@ -215,9 +227,12 @@ const ModalInfo = styled.div`
     gap: 2.1rem;
 
     &__info-row {
+      font-size: ${FONTSIZE['text-sm']};
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      grid-gap: 32px;
       &-title {
         font-weight: ${FONTWEIGHT['font-medium']};
-        font-size: ${FONTSIZE['text-sm']};
         line-height: 18px;
       }
     }

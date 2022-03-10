@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import {
   BrowserRouter as Router,
@@ -23,7 +24,8 @@ function App() {
   };
 
   return (
- 
+ <>
+        <Toaster />
         <Router>
           <Routes>
             <Route path="/" element={<Login />} />
@@ -35,6 +37,7 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
+        </>
   );
 }
 

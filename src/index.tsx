@@ -14,7 +14,7 @@ ReactDOM.render(
     <GlobalStyles />
     <Provider store={store}>
        <PersistGate loading={null} persistor={persistor}>
-      <App />
+        <App />
       </PersistGate>
     </Provider>
   </React.StrictMode>,
