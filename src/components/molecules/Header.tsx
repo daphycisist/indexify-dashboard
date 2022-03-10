@@ -1,14 +1,13 @@
 import React, { ChangeEvent, FC, memo } from 'react';
-import { logout } from '../../features/company/companySlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { DPIconIndexifyLogo } from '../../assets/icons';
 import { COLORS, FONTWEIGHT } from '../../constants';
+import { logout } from '../../features/company/companySlice';
 import media from '../../utilities';
 import Button from '../atoms/Button/Button';
 import Input from '../atoms/Input/Input';
-import { persistor } from '../../store';
 
 const Header: FC<{
   handleSearch: (event: ChangeEvent<HTMLInputElement>) => void;

@@ -27,10 +27,7 @@ export const companyApi = createApi({
         };
       },
     }),
-    getAllCompanies: builder.query<CompaniesResponseType, number>({
-      query: (page) => ({ url: `/company?page=${page + 1}`, method: 'GET' }),
-    }),
-    getCompany: builder.query<
+    getCompanies: builder.query<
       CompaniesResponseType,
       { page: number; search: string }
     >({
@@ -44,5 +41,5 @@ export const companyApi = createApi({
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useGetAllCompaniesQuery, useGetCompanyQuery, useLoginMutation } =
+export const { useGetCompaniesQuery, useLoginMutation } =
   companyApi;

@@ -43,6 +43,7 @@ export interface TableInterface
   data: Record<string, unknown>[];
   columns: { Header: string; accessor: string }[];
   onRowClick?: (row: Record<string, unknown>) => void;
+  isLoading?: boolean;
 }
 
 export interface ModalInterface  {

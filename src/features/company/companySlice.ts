@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { persistor } from '../../store';
 import { CompanyInterface } from '../../types';
 
 export interface CompanyState {
@@ -29,8 +28,9 @@ export const companySlice = createSlice({
       state.isAuthenticated = true;
     },
     logout: (state) => {
-       window.localStorage.removeItem('persist:root');
-       state = initialState;
+     localStorage.removeItem('persist:root');
+      localStorage.clear()
+      state = initialState;
     },
   },
 });

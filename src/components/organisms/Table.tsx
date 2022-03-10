@@ -1,8 +1,15 @@
 import React, { FC } from 'react';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { useTable } from 'react-table';
 import { TableInterface } from '../../types';
-
-const Table: FC<TableInterface> = ({ data, columns, onRowClick }) => {
+import TableEmptyState from '../molecules/TableEmptyState';
+const Table: FC<TableInterface> = ({
+  data,
+  columns,
+  onRowClick,
+  isLoading,
+}) => {
   const TableData = React.useMemo(() => data, [data]);
 
   const TableColumns = React.useMemo(() => columns, [columns]);
@@ -10,7 +17,38 @@ const Table: FC<TableInterface> = ({ data, columns, onRowClick }) => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns: TableColumns, data: TableData });
 
-  return (
+  return !rows.length ? (
+    <>
+      {' '}
+      {
+        <table>
+          {' '}
+          <thead>
+            {' '}
+            <tr style={{display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr' }}>
+              {headerGroups.map((column) => {
+                return column.headers.map((header) => {
+                  console.log(header);
+                  return <th>{header.Header}</th>;
+                });
+              })}{' '}
+            </tr>
+          </thead>
+        </table>
+      }{' '}
+      <div
+        style={{
+          width: '100%',
+          height: '48rem',
+          margin: '0 auto',
+          display: 'grid',
+          placeContent: 'center',
+        }}
+      >
+        <TableEmptyState />
+      </div>
+    </>
+  ) : (
     <table {...getTableProps()}>
       <thead>
         {headerGroups.map((headerGroup) => (
@@ -22,19 +60,50 @@ const Table: FC<TableInterface> = ({ data, columns, onRowClick }) => {
         ))}
       </thead>
       <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr
-              {...row.getRowProps()}
-              onClick={() => onRowClick && onRowClick(row.original)}
-            >
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
-              })}
-            </tr>
-          );
-        })}
+        {!rows.length ? (
+          <tr
+            style={{
+              width: '100%',
+              height: '48rem',
+              margin: '0 auto',
+            }}
+          >
+            <td>
+              <TableEmptyState />
+            </td>
+          </tr>
+        ) : isLoading ? (
+          <tr>
+            <td>
+              <Skeleton height={20} />
+            </td>
+            <td>
+              <Skeleton height={20} />
+            </td>
+            <td>
+              <Skeleton height={20} />
+            </td>
+            <td>
+              <Skeleton height={20} />
+            </td>
+          </tr>
+        ) : (
+          rows.map((row) => {
+            prepareRow(row);
+            return (
+              <tr
+                {...row.getRowProps()}
+                onClick={() => onRowClick && onRowClick(row.original)}
+              >
+                {row.cells.map((cell) => {
+                  return (
+                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                  );
+                })}
+              </tr>
+            );
+          })
+        )}
       </tbody>
     </table>
   );

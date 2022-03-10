@@ -70,6 +70,7 @@ const Login: FC = () => {
             className="login-card__button"
             onClick={handleLogin}
             disabled={isLoading}
+            type="submit"
           >
             {isLoading ? (
               <DPIconLoadinRing className="loader" />
@@ -89,7 +90,7 @@ const LoginContainer = styled.div`
   padding-top: 12.3rem;
 `;
 
-const LoginWrapper = styled.div`
+const LoginWrapper = styled.form`
   margin: auto;
   width: fit-content;
   text-align: center;

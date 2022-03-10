@@ -4,16 +4,13 @@ import React, {
   useCallback,
   useEffect,
   useRef,
-  useState,
+  useState
 } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { COLORS, FONTSIZE, FONTWEIGHT } from '../../constants';
-import {
-  useGetAllCompaniesQuery,
-  useGetCompanyQuery,
-} from '../../features/api/companyApi';
-import { addCompanies } from '../../features/company/companySlice';
+import { useGetCompaniesQuery } from '../../features/api/companyApi';
 import { RootState } from '../../store';
 import { CompanyInterface } from '../../types';
 import media from '../../utilities';
@@ -43,9 +40,6 @@ const Dashboard = () => {
       accessor: 'createdAt',
     },
   ];
-  const dispatch = useDispatch();
-  const { companies } = useSelector((state: RootState) => state.companies);
-
   const [currentPage, setCurrentPage] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -53,28 +47,17 @@ const Dashboard = () => {
   const [rowData, setRowData] = useState<CompanyInterface | null>(null);
 
   let {
-    isLoading: allCompaniesLoading,
-    data: allCompanies,
-    isSuccess: allCompaniesSucess,
-    isFetching: allCompaniesFetching,
-    error: allCompaniesError,
-  } = useGetAllCompaniesQuery(currentPage);
-
-  let {
     data: searchedCompanies,
-    isLoading: companiesLoading,
-    isSuccess: companiesSucess,
-    isFetching: companiesFetching,
-    error: companiesError,
-  } = useGetCompanyQuery({
+    isLoading,
+    isSuccess,
+    isFetching,
+    error,
+  } = useGetCompaniesQuery({
     page: currentPage,
     search: debouncedSearch,
   });
 
-  const allCompaniesData = allCompanies?.payload;
   const searchedCompaniesData = searchedCompanies?.payload;
-
-  // console.log({ searchedCompaniesData });
 
   const handlePageIncrement = () => setCurrentPage((prev) => prev + 1);
   const handlePageDecrement = () => setCurrentPage((prev) => prev - 1);
@@ -83,27 +66,6 @@ const Dashboard = () => {
     setRowData(data);
     setIsOpen(true);
   };
-
-  useEffect(() => {
-    if (companiesFetching) {
-      dispatch(addCompanies(searchedCompaniesData?.companies));
-    } else if (allCompaniesFetching) {
-      dispatch(addCompanies(allCompaniesData?.companies));
-    }
-  }, [
-    allCompaniesData?.companies,
-    allCompaniesFetching,
-    companiesFetching,
-    dispatch,
-    searchedCompaniesData?.companies,
-  ]);
-
-  console.log({
-    companiesLoading,
-    allCompaniesLoading,
-    allCompaniesData,
-    searchedCompaniesData,
-  });
 
   const debouncedSearchValue = useRef(
     debounce((searchString) => {
@@ -121,6 +83,7 @@ const Dashboard = () => {
     (event: ChangeEvent<HTMLInputElement>) => {
       const searchValue = event.target.value;
       setSearch(searchValue);
+      setCurrentPage(0);
       debouncedSearchValue(searchValue);
     },
     [debouncedSearchValue]
@@ -135,6 +98,8 @@ const Dashboard = () => {
       );
     return data;
   };
+
+  console.log({ isFetching });
   return (
     <>
       <Modal isShown={isOpen} hide={() => setIsOpen((prev) => !prev)}>
@@ -182,17 +147,21 @@ const Dashboard = () => {
         <Header handleSearch={handleSearch} searchValue={search} />
         <DashboardContentWrapper>
           <DashboardContent>
-            <TableWrapper>
+            <TableWrapper className="hello">
               <Table
                 columns={columns}
-                data={(companies as unknown as any) ?? []}
+                data={
+                  (searchedCompaniesData?.companies as unknown as any) ?? []
+                }
                 onRowClick={handleRowClick}
+                isLoading={isFetching}
               />
+            
             </TableWrapper>
             <div className="pagination_container">
               <Pagination
                 currentPage={currentPage}
-                totalPages={allCompaniesData?.pages ?? 0}
+                totalPages={Math.ceil(searchedCompaniesData?.pages ?? 0)}
                 handlePageDecrement={handlePageDecrement}
                 handlePageIncrement={handlePageIncrement}
                 className=""
@@ -212,7 +181,7 @@ const ModalInfo = styled.div`
   height: 33.9rem;
   background-color: ${COLORS['swan-white']};
   border-radius: 5px;
-  
+
   .header {
     font-weight: ${FONTWEIGHT['font-bold']};
     font-size: ${FONTSIZE['text-lg']};
@@ -250,6 +219,7 @@ const DashboardWrapper = styled.section`
 const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
+  min-height: 53.4rem;
 `;
 
 const DashboardContentWrapper = styled.section`

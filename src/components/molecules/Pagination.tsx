@@ -12,7 +12,7 @@ const Pagination: FC<PaginationInterface> = ({
   handlePageDecrement,
 }) => {
   return (
-    <PaginationWrapper>
+    <PaginationWrapper totalPages={totalPages}>
       <PaginationButtons
         disabled={currentPage === 0}
         onClick={handlePageDecrement}
@@ -24,7 +24,7 @@ const Pagination: FC<PaginationInterface> = ({
         <span>of {totalPages}</span>
       </PageTracker>
       <PaginationButtons
-        disabled={currentPage === totalPages}
+        disabled={currentPage + 1 === totalPages}
         onClick={handlePageIncrement}
       >
         <DPIconCaretRight />
@@ -35,9 +35,10 @@ const Pagination: FC<PaginationInterface> = ({
 
 export default Pagination;
 
-const PaginationWrapper = styled.div`
+const PaginationWrapper = styled.div<{ totalPages: number }>`
   display: flex;
   align-items: center;
+  display: ${({totalPages}) => !totalPages && 'none'}
 `;
 
 const PaginationButtons = styled(Button)<{ disabled: boolean }>`
