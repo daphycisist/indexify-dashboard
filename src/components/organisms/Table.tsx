@@ -25,7 +25,6 @@ const Table: FC<TableInterface> = ({
             <tr style={{display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr' }}>
               {headerGroups.map((column) => {
                 return column.headers.map((header) => {
-                  console.log(header);
                   return <th>{header.Header}</th>;
                 });
               })}

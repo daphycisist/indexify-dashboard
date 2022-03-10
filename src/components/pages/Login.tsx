@@ -20,12 +20,9 @@ const Login: FC = () => {
   const [email, setEmail] = useState('');
 
   const [login, { isError, isLoading, isSuccess, error }] = useLoginMutation();
-  console.log({ isError, isLoading, isSuccess });
 
   const handleLogin = async () => {
     try {
-      // console.log(email);
-      // console.log(data);
       const validatedEmail = validateEmail(email);
 
       if (!validatedEmail) {
@@ -34,26 +31,20 @@ const Login: FC = () => {
       }
 
       const result = await login({ email }).unwrap();
-      console.log({ result, isError, isLoading, isSuccess });
 
       if (result.token) {
         dispatch(setCredentials(result.token));
         navigate('/dashboard');
       } else if (isError) {
-        console.log(error);
         toast.error('errordadta?.data?.message');
       }
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setEmail(value);
   };
-
-  console.log(!!email.length);
 
   return (
     <LoginContainer className="">

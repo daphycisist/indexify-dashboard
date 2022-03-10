@@ -27,14 +27,10 @@ export const companySlice = createSlice({
       state.token = action.payload;
       state.isAuthenticated = true;
     },
-      logout: (state) => {
-      
-        console.log(localStorage.getItem('persist:root'))
+    logout: (state) => {
       localStorage.removeItem('persist:root');
       localStorage.clear();
       state = initialState;
-        console.log(localStorage.getItem('persist:root'))
-
     },
   },
 });

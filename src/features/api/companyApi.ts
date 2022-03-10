@@ -19,7 +19,6 @@ export const companyApi = createApi({
   endpoints: (builder) => ({
     login: builder.mutation<{ token: string }, { email: string }>({
       query: (request) => {
-        console.log(request);
         return {
           url: `/auth/login`,
           method: 'POST',
