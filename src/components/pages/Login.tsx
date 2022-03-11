@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useState } from 'react';
+import React, { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -21,7 +21,8 @@ const Login: FC = () => {
 
   const [login, { isError, isLoading}] = useLoginMutation();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       const validatedEmail = validateEmail(email);
 
@@ -29,6 +30,8 @@ const Login: FC = () => {
         toast.error('Please provide a valid email');
         return;
       }
+
+      console.log("HERE")
 
       const result = await login({ email }).unwrap();
 
@@ -48,7 +51,7 @@ const Login: FC = () => {
 
   return (
     <LoginContainer className="">
-      <LoginWrapper>
+      <LoginWrapper onSubmit={handleLogin}>
         <DPIconIndexifyLogo className="logo" />
         <Card className="login-card">
           <h1>Log In to your account</h1>
@@ -59,7 +62,6 @@ const Login: FC = () => {
           />
           <Button
             className="login-card__button"
-            onClick={handleLogin}
             disabled={isLoading}
             type="submit"
           >

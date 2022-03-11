@@ -4,3 +4,4 @@ export { ReactComponent as DPIconCaretRight } from './svgs/caret-right.svg';
 export { ReactComponent as DPIconClose } from './svgs/close.svg';
 export { ReactComponent as DPIconLoadinRing } from './svgs/loading-ring.svg';
 export { ReactComponent as DPIconEmptyState } from './svgs/emptyState.svg';
+export { ReactComponent as DPIconNotFound } from './svgs/page-not-found.svg';

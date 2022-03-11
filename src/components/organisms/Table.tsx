@@ -17,15 +17,22 @@ const Table: FC<TableInterface> = ({
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns: TableColumns, data: TableData });
 
-  return !rows.length ? (
+  console.log(isLoading);
+
+  return !rows.length && !!isLoading ? (
     <>
       {
         <table>
           <thead>
-            <tr style={{display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr' }}>
+            <tr
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 2fr 1fr 1fr',
+              }}
+            >
               {headerGroups.map((column) => {
                 return column.headers.map((header) => {
-                  return <th>{header.Header}</th>;
+                  return <th key={Math.random()}>{header.Header}</th>;
                 });
               })}
             </tr>

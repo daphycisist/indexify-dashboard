@@ -90,6 +90,8 @@ const Dashboard = () => {
     return data;
   };
 
+  console.log({isFetching})
+
   return (
     <>
       <Modal isShown={isOpen} hide={() => setIsOpen((prev) => !prev)}>

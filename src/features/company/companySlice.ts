@@ -28,8 +28,6 @@ export const companySlice = createSlice({
       state.isAuthenticated = true;
     },
     logout: (state) => {
-      localStorage.removeItem('persist:root');
-      localStorage.clear();
       state = initialState;
     },
   },

@@ -19,9 +19,14 @@ const Header: FC<{
 
   const handleLogout = () => {
     dispatch(logout());
-    persistor.purge();
-    navigate('/');
+    persistor.pause();
+    persistor.flush().then(() => {
+      return persistor.purge().then(() => {
+        navigate('/');
+      });
+    });
   };
+
   return (
     <HeaderContainer>
       <HeaderWrapper>
@@ -92,8 +97,6 @@ const HeaderWrapper = styled.div`
   max-width: 128rem;
   width: 100%;
   margin: 0 auto;
-  /* display: flex; */
-  //4.9
   display: flex;
   flex-direction: column;
   gap: 2rem;
