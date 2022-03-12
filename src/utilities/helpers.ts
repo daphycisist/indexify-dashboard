@@ -20,6 +20,6 @@ export const validateEmail = (email: string) => {
     );
 };
 
-export const formatDate = (date: Date | string) => {
+export const formatDate = (date: Date | string | undefined) => {
   return moment(date).format('MM/DD/YYYY');
 };

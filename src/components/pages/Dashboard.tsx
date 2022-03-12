@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import toast from 'react-hot-toast';
 import styled from 'styled-components';
 import { COLORS, FONTSIZE, FONTWEIGHT } from '../../constants';
 import { useGetCompaniesQuery } from '../../features/api/companyApi';
@@ -49,6 +50,8 @@ const Dashboard = () => {
   let {
     data: searchedCompanies,
     isFetching,
+    isError,
+    error,
   } = useGetCompaniesQuery({
     page: currentPage,
     search: `${debouncedSearch}`,
@@ -71,10 +74,15 @@ const Dashboard = () => {
   ).current;
 
   useEffect(() => {
+    if (isError && error && 'data' in error) {
+      const errorData = error.data as any;
+      toast.error(errorData.message);
+    }
+
     return () => {
       debouncedSearchValue.cancel();
     };
-  }, [debouncedSearchValue]);
+  }, [debouncedSearchValue, error, isError]);
 
   const handleSearch = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +101,7 @@ const Dashboard = () => {
         rowData?.worth_currency as string,
         rowData?.net_worth as number
       );
-   
+
     return data;
   };
 
@@ -117,7 +125,7 @@ const Dashboard = () => {
               <span className="content-container__info-row-title">
                 Date Created:
               </span>
-              <span className="">{rowData?.createdAt}</span>
+              <span className="">{formatDate(rowData?.createdAt)}</span>
             </div>
             <div className="content-container__info-row">
               <span className="content-container__info-row-title">
