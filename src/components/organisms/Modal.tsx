@@ -10,7 +10,6 @@ export const Modal: FC<ModalInterface> = ({
   isShown,
   hide,
   modalContent,
-  headerText,
   children,
 }) => {
   const modal = (
@@ -35,7 +34,6 @@ export const Wrapper = styled.div`
   left: 50%;
   top: 7.9rem;
   z-index: 700;
-  /* width: inherit; */
   width: 49.2rem;
   outline: 0;
   transform: translateX(-50%);
@@ -90,8 +88,6 @@ export const CloseButton = styled(Button)`
 `;
 
 export const Content = styled.div`
-  /* padding: 10px; */
-  /* max-height: 30rem; */
   overflow-x: hidden;
   overflow-y: auto;
 `;

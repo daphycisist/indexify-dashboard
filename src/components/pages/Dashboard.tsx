@@ -49,8 +49,6 @@ const Dashboard = () => {
   let {
     data: searchedCompanies,
     isFetching,
-    isError,
-    error,
   } = useGetCompaniesQuery({
     page: currentPage,
     search: `${debouncedSearch}`,
@@ -98,17 +96,6 @@ const Dashboard = () => {
    
     return data;
   };
-
-  console.log({
-    isFetching,
-    v: searchedCompaniesData?.companies,
-    isError,
-    error,
-  });
-
-  if (isError) {
-    // toast.error(error?.data?.message as unknown as any)
-  }
 
   return (
     <>
@@ -282,7 +269,6 @@ const DashboardContentWrapper = styled.section`
       line-height: 17px;
       padding: 1.5rem 0;
     }
-    //1183
     th,
     td {
       border-bottom: 1px solid ${COLORS['grey-100']};

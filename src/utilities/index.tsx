@@ -8,14 +8,7 @@ const mediaQuery = (query: RuleOrQueryType) => (rules: RuleOrQueryType) =>
       ${css(rules)}
     }
   `;
-
-/**
- * Media quries - Sample use
- * ${media.mobile`
-      display: block;
-    `}
- */
-
+  
 const media = {
   smallMobile: mediaQuery`min-width: 320px`,
   mobile: mediaQuery`min-width: 414px`,

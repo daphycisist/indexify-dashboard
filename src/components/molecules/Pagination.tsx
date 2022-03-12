@@ -42,7 +42,6 @@ const PaginationWrapper = styled.div<{ totalPages: number }>`
 `;
 
 const PaginationButtons = styled(Button)<{ disabled: boolean }>`
-  /* padding: 0.7rem 1.036rem 0.7rem 0.852rem; */
   ${({ disabled }) =>
     disabled &&
     css`
