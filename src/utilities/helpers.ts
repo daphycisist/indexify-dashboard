@@ -1,8 +1,15 @@
+import moment from 'moment';
+
 export const formatCurrency = (currency: string, amount: number) => {
-  return new Intl.NumberFormat('en-US', {
+  const formatter = Intl.NumberFormat('en', {
+    notation: 'compact',
     style: 'currency',
     currency,
-  }).format(amount);
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2, 
+  });
+
+  return formatter.format(amount);
 };
 
 export const validateEmail = (email: string) => {
@@ -11,4 +18,8 @@ export const validateEmail = (email: string) => {
     .match(
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     );
+};
+
+export const formatDate = (date: Date | string) => {
+  return moment(date).format('MM/DD/YYYY');
 };

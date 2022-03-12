@@ -17,8 +17,6 @@ const Table: FC<TableInterface> = ({
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns: TableColumns, data: TableData });
 
-  console.log(isLoading);
-
   return !rows.length && !!isLoading ? (
     <>
       {

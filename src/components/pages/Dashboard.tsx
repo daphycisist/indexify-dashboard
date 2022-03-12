@@ -11,7 +11,7 @@ import { COLORS, FONTSIZE, FONTWEIGHT } from '../../constants';
 import { useGetCompaniesQuery } from '../../features/api/companyApi';
 import { CompanyInterface } from '../../types';
 import media from '../../utilities';
-import { formatCurrency } from '../../utilities/helpers';
+import { formatCurrency, formatDate } from '../../utilities/helpers';
 import Header from '../molecules/Header';
 import Pagination from '../molecules/Pagination';
 import { Modal } from '../organisms/Modal';
@@ -35,6 +35,9 @@ const Dashboard = () => {
     {
       Header: 'Date created',
       accessor: 'createdAt',
+      Cell: (props: { row: { original: { createdAt: string | Date } } }) => {
+        return formatDate(props.row.original.createdAt);
+      },
     },
   ];
   const [currentPage, setCurrentPage] = useState(0);
@@ -43,7 +46,12 @@ const Dashboard = () => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [rowData, setRowData] = useState<CompanyInterface | null>(null);
 
-  let { data: searchedCompanies, isFetching } = useGetCompaniesQuery({
+  let {
+    data: searchedCompanies,
+    isFetching,
+    isError,
+    error,
+  } = useGetCompaniesQuery({
     page: currentPage,
     search: `${debouncedSearch}`,
   });
@@ -87,10 +95,20 @@ const Dashboard = () => {
         rowData?.worth_currency as string,
         rowData?.net_worth as number
       );
+   
     return data;
   };
 
-  console.log({isFetching})
+  console.log({
+    isFetching,
+    v: searchedCompaniesData?.companies,
+    isError,
+    error,
+  });
+
+  if (isError) {
+    // toast.error(error?.data?.message as unknown as any)
+  }
 
   return (
     <>
@@ -143,7 +161,10 @@ const Dashboard = () => {
               <Table
                 columns={columns}
                 data={
-                  (searchedCompaniesData?.companies as unknown as any) ?? []
+                  (searchedCompaniesData?.companies as unknown as Record<
+                    string,
+                    unknown
+                  >[]) ?? []
                 }
                 onRowClick={handleRowClick}
                 isLoading={isFetching}
@@ -240,6 +261,10 @@ const DashboardContentWrapper = styled.section`
         td {
           border-bottom: 0;
         }
+      }
+
+      &:hover {
+        cursor: pointer;
       }
     }
 
