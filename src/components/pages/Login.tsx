@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, FormEvent, useState } from 'react';
+import React, { ChangeEvent, FC, FormEvent, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ const Login: FC = () => {
 
   const [email, setEmail] = useState('');
 
-  const [login, { isError, isLoading}] = useLoginMutation();
+  const [login, { isError, error, isLoading }] = useLoginMutation();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,18 +31,21 @@ const Login: FC = () => {
         return;
       }
 
-      console.log("HERE")
-
       const result = await login({ email }).unwrap();
 
       if (result.token) {
         dispatch(setCredentials(result.token));
         navigate('/dashboard');
-      } else if (isError) {
-        toast.error('errordadta?.data?.message');
       }
     } catch (err) {}
   };
+
+  useEffect(() => {
+    if (isError && error && 'data' in error) {
+      const errorData = error.data as any;
+      toast.error(errorData.validation.body.message);
+    }
+  }, [isError, error]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
